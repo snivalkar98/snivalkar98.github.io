@@ -2142,7 +2142,7 @@ input, select, textarea {
 			}
 
 			.image.avatar img {
-				border-radius: 100%;
+				border-radius: 25%;
 				width: 100%;
 			}
 
@@ -3141,7 +3141,7 @@ input, select, textarea {
 			}
 
 			header.major h2 {
-				font-size: 1.35em;
+				font-size: 1.00em;
 			}
 
 		/* List */
