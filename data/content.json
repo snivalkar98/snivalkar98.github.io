@@ -1,0 +1,90 @@
+{
+  "meta": {
+    "title": "Backend Developer Portfolio",
+    "description": "Backend Developer (5 yrs) \u2014 Node.js, Express, Laravel, Linux, API Integrations",
+    "accent": "#7c3aed"
+  },
+  "profile": {
+    "name": "Your Name",
+    "headline": "Backend Developer \u2022 API Integrations \u2022 Node.js \u2022 Laravel \u2022 Linux",
+    "location": "India",
+    "company": "Urja Communication",
+    "experience_years": 5,
+    "current_company_experience_years": 2,
+    "summary": "Backend developer with ~5 years of experience building scalable APIs, integrations, and secure backend systems. Strong in Node.js/Express, Laravel, Linux server operations, and third\u2011party API integrations. Focused on clean architecture, performance, and reliability."
+  },
+  "links": [
+    {
+      "label": "LinkedIn",
+      "href": "https://www.linkedin.com/in/your-profile"
+    },
+    {
+      "label": "GitHub",
+      "href": "https://github.com/your-handle"
+    },
+    {
+      "label": "Email",
+      "href": "mailto:you@example.com"
+    }
+  ],
+  "skills": [
+    "Node.js",
+    "Express.js",
+    "Laravel",
+    "REST APIs",
+    "API Integrations",
+    "Linux (Nginx/Apache)",
+    "MySQL",
+    "PostgreSQL",
+    "Redis",
+    "JWT/Auth",
+    "Git",
+    "CI/CD basics",
+    "Security best practices"
+  ],
+  "experience": [
+    {
+      "role": "Backend Developer",
+      "company": "Urja Communication",
+      "period": "2023 \u2014 Present",
+      "highlights": [
+        "Built and maintained API integrations (payment gateways, CRM, analytics).",
+        "Developed backend services with Node.js/Express and Laravel.",
+        "Improved performance with caching, query optimization, and clean architecture.",
+        "Managed Linux deployments, logs, and production fixes."
+      ]
+    },
+    {
+      "role": "Backend Developer",
+      "company": "Previous Company",
+      "period": "2020 \u2014 2023",
+      "highlights": [
+        "Delivered REST APIs and admin panels for business workflows.",
+        "Implemented authentication, authorization, and secure data handling."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "title": "API Integration Hub",
+      "tag": "Node.js \u2022 Express \u2022 Webhooks",
+      "description": "A modular integration layer to connect 3rd\u2011party services (webhooks, retries, observability).",
+      "link": "https://example.com",
+      "image": "assets/img/projects/project-1.png"
+    },
+    {
+      "title": "Laravel Admin + Reporting",
+      "tag": "Laravel \u2022 MySQL \u2022 Exports",
+      "description": "Role-based admin with reporting dashboards, filters, and CSV/PDF exports.",
+      "link": "https://example.com",
+      "image": "assets/img/projects/project-2.png"
+    },
+    {
+      "title": "Linux Deployment Playbook",
+      "tag": "Nginx \u2022 PM2 \u2022 CI/CD",
+      "description": "A repeatable deployment setup with HTTPS, process manager, and monitoring hooks.",
+      "link": "https://example.com",
+      "image": "assets/img/projects/project-3.png"
+    }
+  ]
+}

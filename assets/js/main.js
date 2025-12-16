@@ -1,117 +1,137 @@
-/*
-	Strata by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
-*/
+const $ = (sel, el=document) => el.querySelector(sel);
+const $$ = (sel, el=document) => Array.from(el.querySelectorAll(sel));
 
-(function($) {
+async function loadContent(){
+  const res = await fetch('data/content.json', {cache:'no-store'});
+  const data = await res.json();
 
-	var $window = $(window),
-		$body = $('body'),
-		$header = $('#header'),
-		$footer = $('#footer'),
-		$main = $('#main'),
-		settings = {
+  document.title = `${data.profile.name} — ${data.meta.title}`;
+  $('meta[name="description"]').setAttribute('content', data.meta.description);
 
-			// Parallax background effect?
-				parallax: true,
+  // Accent color
+  document.documentElement.style.setProperty('--accent', data.meta.accent || '#7c3aed');
 
-			// Parallax factor (lower = more intense, higher = less intense).
-				parallaxFactor: 20
+  // Hero
+  $('#name').textContent = data.profile.name;
+  $('#headline').textContent = data.profile.headline;
+  $('#summary').textContent = data.profile.summary;
 
-		};
+  $('#pill-company').textContent = `Now @ ${data.profile.company}`;
+  $('#pill-exp').textContent = `${data.profile.experience_years}+ yrs`;
 
-	// Breakpoints.
-		breakpoints({
-			xlarge:  [ '1281px',  '1800px' ],
-			large:   [ '981px',   '1280px' ],
-			medium:  [ '737px',   '980px'  ],
-			small:   [ '481px',   '736px'  ],
-			xsmall:  [ null,      '480px'  ],
-		});
+  $('#stat-company').textContent = `${data.profile.current_company_experience_years}+ yrs`;
+  $('#stat-company-sub').textContent = `at ${data.profile.company}`;
 
-	// Play initial animations on page load.
-		$window.on('load', function() {
-			window.setTimeout(function() {
-				$body.removeClass('is-preload');
-			}, 100);
-		});
+  // Links
+  const linksWrap = $('#links');
+  linksWrap.innerHTML = '';
+  data.links.forEach(l => {
+    const a = document.createElement('a');
+    a.className = 'btn';
+    a.href = l.href;
+    a.target = l.href.startsWith('http') ? '_blank' : '_self';
+    a.rel = 'noopener';
+    a.textContent = l.label;
+    linksWrap.appendChild(a);
+  });
 
-	// Touch?
-		if (browser.mobile) {
+  // Skills
+  const skillsWrap = $('#skills');
+  skillsWrap.innerHTML = '';
+  data.skills.forEach(s => {
+    const span = document.createElement('span');
+    span.className = 'tag';
+    span.textContent = s;
+    skillsWrap.appendChild(span);
+  });
 
-			// Turn on touch mode.
-				$body.addClass('is-touch');
+  // Experience
+  const expWrap = $('#experience');
+  expWrap.innerHTML = '';
+  data.experience.forEach(x => {
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `
+      <div class="top">
+        <h3>${escapeHtml(x.role)} <span class="line">• ${escapeHtml(x.company)}</span></h3>
+        <div class="period">${escapeHtml(x.period)}</div>
+      </div>
+      <ul class="bullets">
+        ${(x.highlights || []).map(h => `<li>${escapeHtml(h)}</li>`).join('')}
+      </ul>
+    `;
+    expWrap.appendChild(div);
+  });
 
-			// Height fix (mostly for iOS).
-				window.setTimeout(function() {
-					$window.scrollTop($window.scrollTop() + 1);
-				}, 0);
+  // Projects
+  const prWrap = $('#projects');
+  prWrap.innerHTML = '';
+  data.projects.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'tile';
+    div.innerHTML = `
+      <div class="project">
+        <div class="thumb">
+          ${p.image ? `<img src="${escapeAttr(p.image)}" alt="${escapeAttr(p.title)}">` : ''}
+        </div>
+        <div class="meta">
+          <h3>${escapeHtml(p.title)}</h3>
+          <div class="line">${escapeHtml(p.tag || '')}</div>
+          <p>${escapeHtml(p.description || '')}</p>
+          <div class="actions">
+            ${p.link ? `<a class="btn primary" href="${escapeAttr(p.link)}" target="_blank" rel="noopener">View</a>` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+    prWrap.appendChild(div);
+  });
 
-		}
+  // Footer year
+  $('#year').textContent = new Date().getFullYear();
+}
 
-	// Footer.
-		breakpoints.on('<=medium', function() {
-			$footer.insertAfter($main);
-		});
+function escapeHtml(str=''){
+  return String(str).replace(/[&<>"']/g, s => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[s]));
+}
+function escapeAttr(str=''){ return escapeHtml(str); }
 
-		breakpoints.on('>medium', function() {
-			$footer.appendTo($header);
-		});
+function themeInit(){
+  const saved = localStorage.getItem('theme');
+  const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+  const theme = saved || (prefersLight ? 'light' : 'dark');
+  document.documentElement.setAttribute('data-theme', theme);
+  $('#themeLabel').textContent = theme === 'light' ? 'Light' : 'Dark';
+}
 
-	// Header.
+function themeToggle(){
+  const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+  const next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  $('#themeLabel').textContent = next === 'light' ? 'Light' : 'Dark';
+}
 
-		// Parallax background.
+function activeNav(){
+  const sections = ['about','skillsSec','projectsSec','experienceSec','contactSec'].map(id => document.getElementById(id));
+  const links = $$('.navlinks a');
+  const y = window.scrollY + 140;
+  let current = 'about';
+  for (const s of sections){
+    if (!s) continue;
+    if (y >= s.offsetTop) current = s.id;
+  }
+  links.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === `#${current}`);
+  });
+}
 
-			// Disable parallax on IE (smooth scrolling is jerky), and on mobile platforms (= better performance).
-				if (browser.name == 'ie'
-				||	browser.mobile)
-					settings.parallax = false;
-
-			if (settings.parallax) {
-
-				breakpoints.on('<=medium', function() {
-
-					$window.off('scroll.strata_parallax');
-					$header.css('background-position', '');
-
-				});
-
-				breakpoints.on('>medium', function() {
-
-					$header.css('background-position', 'left 0px');
-
-					$window.on('scroll.strata_parallax', function() {
-						$header.css('background-position', 'left ' + (-1 * (parseInt($window.scrollTop()) / settings.parallaxFactor)) + 'px');
-					});
-
-				});
-
-				$window.on('load', function() {
-					$window.triggerHandler('scroll');
-				});
-
-			}
-
-	// Main Sections: Two.
-
-		// Lightbox gallery.
-			$window.on('load', function() {
-
-				$('#two').poptrox({
-					caption: function($a) { return $a.next('h3').text(); },
-					overlayColor: '#2c2c2c',
-					overlayOpacity: 0.85,
-					popupCloserText: '',
-					popupLoaderText: '',
-					selector: '.work-item a.image',
-					usePopupCaption: true,
-					usePopupDefaultStyling: false,
-					usePopupEasyClose: false,
-					usePopupNav: true,
-					windowMargin: (breakpoints.active('<=small') ? 0 : 50)
-				});
-
-			});
-
-})(jQuery);
+window.addEventListener('scroll', activeNav);
+window.addEventListener('DOMContentLoaded', async () => {
+  themeInit();
+  $('#themeBtn').addEventListener('click', themeToggle);
+  await loadContent();
+  activeNav();
+});
